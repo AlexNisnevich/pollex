@@ -3,9 +3,9 @@ require 'open-uri'
 
 module Pollex
   class Scraper
-    def self.get(path, attr_paths)
+    def self.get(path, attr_paths, table_num = 0)
       page = Nokogiri::HTML(open("http://pollex.org.nz#{path}"))
-      rows = page.css('tr')
+      rows = page.css('table')[table_num].css('tr')
       rows[1...-1].map do |row|
         attrs = {}
         attr_paths.each do |name, xpath|
