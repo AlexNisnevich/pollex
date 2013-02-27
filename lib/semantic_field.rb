@@ -7,7 +7,7 @@ module Pollex
     def reconstructions
       @reconstructions ||= Scraper.get_all(Reconstruction, @path, [
         [:path, 'td[1]/a/@href'],
-        [:reconstruction, 'td[1]/a/text()'],
+        [:protoform, 'td[1]/a/text()'],
         [:description, 'td[2]/text()']
       ])
     end
@@ -23,10 +23,6 @@ module Pollex
 
     def self.count
       self.all.count
-    end
-
-    def self.first
-      self.all.first
     end
   end
 end
