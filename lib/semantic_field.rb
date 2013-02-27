@@ -5,20 +5,20 @@ module Pollex
     attr_accessor :id, :name, :path, :count
 
     def reconstructions
-      @reconstructions ||= Pollex::Scraper.get(@path, [
+      @reconstructions ||= Scraper.get_all(Reconstruction, @path, [
         [:path, 'td[1]/a/@href'],
         [:reconstruction, 'td[1]/a/text()'],
         [:description, 'td[2]/text()']
-      ]).map {|x| Reconstruction.new(x) }
+      ])
     end
 
     def self.all
-      @semantic_fields ||= Pollex::Scraper.get("/category/", [
+      @semantic_fields ||= Scraper.get_all(SemanticField, "/category/", [
         [:id, 'td[1]/a/text()'],
         [:path, 'td[1]/a/@href'],
         [:name, 'td[2]/a/text()'],
         [:count, 'td[3]/text()']
-      ]).map {|x| SemanticField.new(x) }
+      ])
     end
 
     def self.count
