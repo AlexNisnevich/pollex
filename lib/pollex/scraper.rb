@@ -1,7 +1,5 @@
-require 'nokogiri'
-require 'open-uri'
-require 'lrucache'
 require 'singleton'
+require 'open-uri'
 
 module Pollex
   class Scraper
