@@ -1,9 +1,12 @@
 module Pollex
-  class Entry
-    include InstantiateWithAttrs
+  class Entry < PollexObject
+    extend PollexClass
 
-    attr_accessor :reflex, :description, :reconstruction_name, :reconstruction_path
-    attr_accessor :language_name, :language_path, :source_code, :source_path, :flag
+    attr_accessor :reflex, :description, :flag
+    attr_writer :reconstruction_name, :reconstruction_path
+    attr_writer :language_name, :language_path
+    attr_writer :source_code, :source_path
+    attr_inspector :reflex, :description, :language_name, :source_code, :reconstruction_name, :flag
 
     def path
       @reconstruction_path
@@ -30,7 +33,7 @@ module Pollex
     end
 
     def self.find(name)
-      Scraper.get_all(Entry, "/search/?field=entry&query=#{name}", [
+      Scraper.instance.get_all(Entry, "/search/?field=entry&query=#{name}", [
         [:reflex, 'td[3]/text()'],
         [:description, 'td[4]/text()'],
         [:language_path, 'td[1]/a/@href'],

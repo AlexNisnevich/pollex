@@ -1,11 +1,12 @@
 module Pollex
-  class Reconstruction
-    include InstantiateWithAttrs
+  class Reconstruction < PollexObject
+    extend PollexClass
 
-    attr_accessor :path, :protoform, :description
+    attr_accessor :path, :protoform, :description, :semantic_field
+    attr_inspector :protoform, :description, :path
 
     def entries
-      @entries ||= Scraper.get_all(Entry, @path, [
+      @entries ||= Scraper.instance.get_all(Entry, @path, [
         [:reflex, 'td[2]/text()'],
         [:description, 'td[3]/text()'],
         [:language_name, 'td[1]/a/text()'],
@@ -19,36 +20,36 @@ module Pollex
     end
 
     def description
-      @description ||= Scraper.get(@path, [
+      @description ||= Scraper.instance.get(@path, [
         [:description, "table[1]/tr[1]/td/text()"]
       ])[:description]
     end
 
     def level
       unless @level
-        level_parts = Scraper.get(@path, [
-          [:code, "table[1]/tr[2]/td/a/text()", lambda {|x| x.split(':')[0]}],
+        level_parts = Scraper.instance.get(@path, [
+          [:token, "table[1]/tr[2]/td/a/text()", lambda {|x| x.split(':')[0]}],
           [:path, "table[1]/tr[2]/td/a/@href"]
         ])
-        @level = Level.new(:code => level_parts[:code], :path => level_parts[:path])
+        @level = Level.new(:token => level_parts[:token], :path => level_parts[:path])
       end
       @level
     end
 
     def notes
-      @notes ||= Scraper.get(@path, [
+      @notes ||= Scraper.instance.get(@path, [
         [:notes, "table[1]/tr[3]/td/p/text()"]
       ])[:notes]
     end
 
     def count
-      @count ||= Scraper.get(@path, [
+      @count ||= Scraper.instance.get(@path, [
         [:count, "p[@class='count']/text()", lambda {|x| x.split(' ').first}]
       ])[:count]
     end
 
     def self.all
-      @sources ||= Scraper.get_all(Reconstruction, "/entry/", [
+      @sources ||= Scraper.instance.get_all(Reconstruction, "/entry/", [
         [:path, 'td[2]/a/@href'],
         [:protoform, 'td[2]/a/text()'],
         [:description, 'td[3]/text()']
@@ -56,13 +57,13 @@ module Pollex
     end
 
     def self.count
-      @count ||= Scraper.get("/entry/", [
+      @count ||= Scraper.instance.get("/entry/", [
         [:count, "p[@class='count']/text()", lambda {|x| x.split(' ').first}]
       ])[:count]
     end
 
     def self.find(name)
-      Scraper.get_all(Reconstruction, "/search/?field=protoform&query=#{name}", [
+      Scraper.instance.get_all(Reconstruction, "/search/?field=protoform&query=#{name}", [
         [:path, 'td[2]/a/@href'],
         [:protoform, 'td[2]/a/text()'],
         [:description, 'td[3]/text()']

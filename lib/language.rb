@@ -1,11 +1,13 @@
 module Pollex
-  class Language
-    include InstantiateWithAttrs
+  class Language < PollexObject
+    extend PollexClass
 
-    attr_accessor :name, :path, :code, :count
+    attr_accessor :name, :path
+    attr_writer :code, :count
+    attr_inspector :name, :code, :count, :path
 
     def entries
-      @entries ||= Scraper.get_all(Entry, @path, [
+      @entries ||= Scraper.instance.get_all(Entry, @path, [
         [:reflex, 'td[2]/text()'],
         [:description, 'td[3]/text()'],
         [:language_name, nil, lambda {|x| @name}],
@@ -21,13 +23,13 @@ module Pollex
     end
 
     def count
-      @count ||= Scraper.get(@path, [
+      @count ||= Scraper.instance.get(@path, [
         [:count, "p[@class='count']/text()", lambda {|x| x.split(' ').first}]
       ])[:count]
     end
 
     def self.all
-      @languages ||= Scraper.get_all(Language, "/language/", [
+      @languages ||= Scraper.instance.get_all(Language, "/language/", [
         [:name, 'td[2]/a/text()'],
         [:path, 'td[1]/a/@href'],
         [:code, 'td[1]/a/text()'],
@@ -40,7 +42,7 @@ module Pollex
     end
 
     def self.find(name)
-      Scraper.get_all(Language, "/search/?field=language&query=#{name}", [
+      Scraper.instance.get_all(Language, "/search/?field=language&query=#{name}", [
         [:name, 'td[1]/a/text()'],
         [:path, 'td[1]/a/@href']
       ])

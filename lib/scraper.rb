@@ -1,10 +1,48 @@
 require 'nokogiri'
 require 'open-uri'
+require 'lrucache'
+require 'singleton'
 
 module Pollex
   class Scraper
+    include Singleton
+
+    def initialize()
+      @cache = LRUCache.new(:max_size => 100, :default => nil)
+    end
+
+    def open_from_cache(path)
+      if @cache[path]
+        puts "Opening cached contents of http://pollex.org.nz#{path} ..."
+        @cache[path]
+      else
+        puts "Connecting to http://pollex.org.nz#{path} ..."
+        page = Nokogiri::HTML(open("http://pollex.org.nz#{path}"))
+        @cache[path] = page
+        page
+      end
+    end
+
+    # gets arbitrary data from page by xpath, with optional post-processing
+    def get(path, attr_infos)
+      page = open_from_cache(path)
+      contents = page.css('#content')
+
+      attrs = {}
+      attr_infos.each do |name, xpath, post_processor|
+        attrs[name] = ''
+        if xpath
+          attrs[name] = contents.at_xpath(xpath).to_s.strip
+        end
+        if post_processor
+          attrs[name] = post_processor.call(attrs[name])
+        end
+      end
+      attrs
+    end
+
     # gets all elements from table by xpath, with optional post-processing
-    def self.get_all(klass, path, attr_infos, table_num = 0)
+    def get_all(klass, path, attr_infos, table_num = 0)
       puts "Connecting to http://pollex.org.nz#{path} ..."
       page = Nokogiri::HTML(open("http://pollex.org.nz#{path}"))
 
@@ -43,25 +81,6 @@ module Pollex
 
       results
     end
-
-    # gets arbitrary data from page by xpath, with optional post-processing
-    def self.get(path, attr_infos)
-      puts "Connecting to http://pollex.org.nz#{path} ..."
-      page = Nokogiri::HTML(open("http://pollex.org.nz#{path}"))
-      contents = page.css('#content')
-
-      attrs = {}
-      attr_infos.each do |name, xpath, post_processor|
-        attrs[name] = ''
-        if xpath
-          attrs[name] = contents.at_xpath(xpath).to_s.strip
-        end
-        if post_processor
-          attrs[name] = post_processor.call(attrs[name])
-        end
-      end
-      attrs
-    end
   end
 
   # array with a pointer to the next page of results
@@ -78,7 +97,7 @@ module Pollex
 
     def more
       if @next_page
-        Scraper.get_all(query[:klass], @next_page, query[:attr_infos], query[:table_num])
+        Scraper.instance.get_all(query[:klass], @next_page, query[:attr_infos], query[:table_num])
       else
         nil
       end
