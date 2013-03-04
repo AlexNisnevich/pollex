@@ -10,7 +10,7 @@ module Pollex
         [:description, 'td[3]/text()'],
         [:language_name, nil, lambda {|x| @name}],
         [:language_path, nil, lambda {|x| @path}],
-        [:source_name, 'td[4]/a/text()'],
+        [:source_code, 'td[4]/a/text()'],
         [:source_path, 'td[4]/a/@href'],
         [:flag, "td[3]/span[@class='flag']/text()"]
      ])
@@ -27,12 +27,16 @@ module Pollex
     end
 
     def self.all
-      @sources ||= Scraper.get_all(Language, "/language/", [
+      @languages ||= Scraper.get_all(Language, "/language/", [
         [:name, 'td[2]/a/text()'],
         [:path, 'td[1]/a/@href'],
         [:code, 'td[1]/a/text()'],
         [:count, 'td[3]/text()']
       ])
+    end
+
+    def self.count
+      self.all.count
     end
 
     def self.find(name)
