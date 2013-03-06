@@ -88,7 +88,6 @@ module Pollex
     #     [:count, 'td[3]/text()']
     #   ])
     def get_all(klass, path, attr_infos, table_num = 0)
-      puts "Connecting to http://pollex.org.nz#{path} ..."
       page = open_with_cache(path)
 
       rows = page.css('table')[table_num].css('tr')

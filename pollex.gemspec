@@ -1,9 +1,11 @@
+require File.expand_path('../lib/pollex/version', __FILE__)
+
 Gem::Specification.new do |s|
   s.name        = 'pollex'
-  s.version     = '0.0.2'
-  s.date        = '2013-03-04'
+  s.version     = Pollex::VERSION
+
   s.summary     = "Ruby wrapper for scraping pollex (the Polynesian Lexicon Project)"
-  s.description = ""
+  s.description = s.summary
   s.authors     = ["Alex Nisnevich"]
   s.email       = 'alex.nisnevich@gmail.com'
   s.homepage    = 'http://github.com/AlexNisnevich/pollex'
