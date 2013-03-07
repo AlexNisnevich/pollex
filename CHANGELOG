@@ -1,8 +1,13 @@
 3/6/2013 version 0.1.0
+* New class: Pollex:Translator
+* New methods:
+	* Entry.terms        - parses the entry's description and returns an array
+	                       of English definitions for the entry
+	* Source.grammar     - outputs information about parsing descriptions
+	                       of the source's entries
+	* SemanticField.find - filters SemanticField.all by name
 * Including Pollex::Level
 * Fixing Entry#inspect
-* New methods:
-	* SemanticField.find - filters SemanticField.all by name
 * Error handling in PollexObject#inspect
 
 3/5/2013 version 0.0.3

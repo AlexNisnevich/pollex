@@ -27,13 +27,21 @@ module Pollex
         if @cache[key]
           @cache[key]
         else
-          # make a request to MyMemory and store into cache
+          # make a request to MyMemory
           puts "Translating '#{phrase}' ..."
           url = "http://mymemory.translated.net/api/get?q=#{URI::encode(phrase)}&langpair=#{source_lang_code}%7Cen"
           results_json = open(url).read
           result = JSON.parse(results_json)['responseData']['translatedText']
-          @cache[key] = result
-          result
+
+          if result.include? 'MYMEMORY WARNING'
+            # translation failed - return original phrase
+            puts result
+            phrase
+          else
+            # translation succeeded - store into cache and return translated phrase
+            @cache[key] = result
+            result
+          end
         end
       end
     end
