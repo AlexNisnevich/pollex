@@ -13,6 +13,8 @@ module Pollex
       @entries ||= Scraper.instance.get_all(Entry, @path, [
         [:language_name, 'td[1]/a/text()'],
         [:language_path, 'td[1]/a/@href'],
+        [:source_code, nil, lambda {|x| @code}],
+        [:source_path, nil, lambda {|x| @path}],
         [:reflex, 'td[2]/text()'],
         [:description, 'td[3]/text()'],
         [:flag, "td[3]/span[@class='flag']/text()"]
@@ -43,14 +45,18 @@ module Pollex
     # @note Information is currently entered for all sources on
     #   http://pollex.org.nz/source/ up to (and including)
     #   Bse
+    # @return [Hash] grammatical information pertaining to the descriptions
+    #   of this sources' entries
+    # @see Entry#terms
     def grammar
-      # defaults
+      # first, assume reasonable defaults
+
       language = 'en' # default language: English
       dividers = /[,;]/ # default: split on comma and semicolon
       trim_expressions = '' # default: don't trim any expressions
       trim_after = nil # default: don't trim any trailing text
 
-      # source-specific
+      # now bring in source-specific information
 
       if ['Cnt', 'Bxn'].include? @code
         # Spanish-language sources
@@ -65,7 +71,7 @@ module Pollex
         dividers = /(,|;|\. )/
       elsif ['Atn', 'Bwh', 'Hmn'].include? @code
         # don't split at all
-        dividers = nil
+        dividers = '\n' # dividers = nil doesn't work
       elsif ['Bgn', 'Bst', 'Brn'].include? @code
         # split by period
         dividers = '.'
@@ -80,7 +86,7 @@ module Pollex
       if ['McP', 'Dsn'].include? @code
         # Trim all (parenthetical expressions)
         trim_expressions = /\(.*\)/
-      elsif ['Cnt', 'Aca', 'Bse'].include? @code
+      elsif ['Cnt', 'Aca', 'Bse', 'Hmn'].include? @code
         # Trim parenthetical expressions that are <= 4 chars or contain numbers
         trim_expressions = /\((.{0,4}|.*[0-9].*)\)/
       elsif ['Stz', 'Bck'].include? @code

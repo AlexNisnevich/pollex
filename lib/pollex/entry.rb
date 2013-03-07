@@ -15,6 +15,9 @@ module Pollex
       @reconstruction_path
     end
 
+    # Processes the description of this entry and extracts a lits of
+    # definitions, translated into English if necessary.
+    # @return [Array<String>] definitions corresponding to this entry
     def terms
       string = @description
       grammar = description_grammar
@@ -33,7 +36,7 @@ module Pollex
 
       # attempt to translate to English if necessary
       if grammar[:language] != 'en'
-        terms.map! {|t| Translator.instance.translate(t, grammar[:language]) }
+        terms.map! {|t| Translator.instance.translate(t, grammar[:language], terms) }
       end
 
       terms
@@ -85,6 +88,8 @@ module Pollex
 
     private
 
+    # @return [Hash] grammatical information pertaining to the description of this
+    #   entry, used by Entry#terms
     def description_grammar
       if source
         source.grammar

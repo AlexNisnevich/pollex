@@ -3,6 +3,7 @@ end
 
 require 'nokogiri'
 require 'lrucache'
+require 'cld'
 require 'json'
 
 require 'singleton'
