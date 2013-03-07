@@ -1,3 +1,10 @@
+3/6/2013 version 0.1.0
+* Including Pollex::Level
+* Fixing Entry#inspect
+* New methods:
+	* SemanticField.find - filters SemanticField.all by name
+* Error handling in PollexObject#inspect
+
 3/5/2013 version 0.0.3
 * Minor bug-fix, adding version and changelog
 

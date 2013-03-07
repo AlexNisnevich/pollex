@@ -33,5 +33,14 @@ module Pollex
     def self.count
       self.all.count
     end
+
+    # Looks up all SemanticFields matching a given name.
+    # @note Pollex has no built-in search for SemanticFields, so this method is
+    #   simply a filter over SemanticField.all.
+    # @param name [String] term to search for
+    # @return [Array<SemanticField>] array of SemanticFields matching the search term
+    def self.find(name)
+      self.all.select { |sf| sf.name.downcase.include?(name.downcase) }
+    end
   end
 end

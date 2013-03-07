@@ -3,7 +3,7 @@ module Pollex
   class Entry < PollexObject
     extend PollexClass
 
-    attr_accessor :reflex, :description, :flag
+    attr_accessor :reflex, :description, :language_name, :source_code, :reconstruction_name, :flag
     attr_writer :reconstruction_name, :reconstruction_path
     attr_writer :language_name, :language_path
     attr_writer :source_code, :source_path
@@ -17,7 +17,11 @@ module Pollex
 
     # @return [Language] the Language corresponding to this entry
     def language
-      @language ||= Language.new(:name => @language_name, :path => @language_path)
+      if @language_path
+        @language ||= Language.new(:name => @language_name, :path => @language_path)
+      else
+        nil
+      end
     end
 
     # @return [(Source, nil)] the Source corresponding to this entry, if given

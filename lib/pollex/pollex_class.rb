@@ -19,7 +19,7 @@ module Pollex
     def inspect
       inspectables = self.class.inspectables
       if inspectables
-        "#<#{self.class}:0x#{object_id.to_s(16)} " + inspectables.map {|i| "@#{i}=\"#{send(i)}\""}.join(' ') + ">"
+        "#<#{self.class}:0x#{object_id.to_s(16)} " + inspectables.map {|i| "@#{i}=\"#{send(i) rescue nil}\""}.join(' ') + ">"
       else
         super
       end
