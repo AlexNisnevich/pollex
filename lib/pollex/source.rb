@@ -38,6 +38,50 @@ module Pollex
       @count ||= @entries.count
     end
 
+    def grammar
+      # defaults
+      language = 'English'
+      dividers = [',', ';']
+      trim_expressions = 'none'
+
+      # source-specific
+
+      if ['Cnt'].include? @code
+        language = 'Spanish'
+      elsif ['Aca', 'Bgn', 'Btn'].include? @code
+        language = 'French'
+      end
+
+      if ['Aca'].include? @code
+        dividers = [',', ';', '.']
+      elsif ['Atn', 'Bwh'].include? @code
+        dividers = []
+      elsif ['Bgn'].include? @code
+        dividers = ['.']
+      elsif ['Bkr'].include? @code
+        dividers = [';', '.']
+      elsif ['Bge'].include? @code
+        dividers = [';']
+      end
+
+      if ['McP', 'Dsn'].include? @code
+        # Trim all (parenthetical expressions)
+        trim_parentheticals = 'parenthetical'
+      elsif ['Cnt', 'Aca'].include? @code
+        # Trim parenthetical expressions that are <= 3 chars or contain numbers
+        trim_parentheticals = 'short_or_numbers'
+      elsif ['Stz'].include? @code
+        # Trim parenthetical expressions that contain numbers
+        trim_parentheticals = 'numbers'
+      elsif ['Rsr'].include? @code
+        # Trim all "expressions in quotes"
+        trim_parentheticals = 'quotes'
+      elsif ['Btl'].include? @code
+        # Trim everything after a period
+        trim_parentheticals = 'after_period'
+      end
+    end
+
     # Returns all Sources in Pollex.
     # @return [Array<Source>] array of Sources in Pollex
     def self.all
