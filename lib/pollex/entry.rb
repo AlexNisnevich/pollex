@@ -19,13 +19,24 @@ module Pollex
       string = @description
       grammar = description_grammar
 
+      # trim last part of description, if necessary
       if grammar[:trim_after]
         string = string.split(grammar[:trim_after])[0]
       end
 
-      # split string by grammar[:dividers]
-      # remove all text specified by grammar[:trim_expressions]
-      # attempt to translate if grammar[:language] != 'English'
+      # split into terms, remove any unnecessary expressions
+      terms = string.split(grammar[:dividers])
+                    .map {|t| t.sub(grammar[:trim_expressions], '')
+                               .strip
+                               .capitalize }
+                    .select {|t| t.match(/\w/) }
+
+      # attempt to translate to English if necessary
+      if grammar[:language] != 'en'
+        terms.map! {|t| Translator.instance.translate(t, grammar[:language]) }
+      end
+
+      terms
     end
 
     # @return [Language] the Language corresponding to this entry
@@ -75,8 +86,8 @@ module Pollex
     private
 
     def description_grammar
-      if @source
-        @source.grammar
+      if source
+        source.grammar
       else
         Source.new.grammar
       end

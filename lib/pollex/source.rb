@@ -45,43 +45,50 @@ module Pollex
     #   Bse
     def grammar
       # defaults
-      language = 'English'
-      dividers = [',', ';']
-      trim_expressions = 'none'
-      trim_after = nil
+      language = 'en' # default language: English
+      dividers = /[,;]/ # default: split on comma and semicolon
+      trim_expressions = '' # default: don't trim any expressions
+      trim_after = nil # default: don't trim any trailing text
 
       # source-specific
 
       if ['Cnt', 'Bxn'].include? @code
-        language = 'Spanish'
-      elsif ['Aca', 'Bgn', 'Btn'].include? @code
-        language = 'French'
+        # Spanish-language sources
+        language = 'es'
+      elsif ['Aca', 'Bgn', 'Btn', 'Hmn', 'Rch'].include? @code
+        # French-language sources
+        language = 'fr'
       end
 
       if ['Aca', 'Bxn'].include? @code
-        dividers = [',', ';', '. ']
-      elsif ['Atn', 'Bwh'].include? @code
-        dividers = []
+        # split by comma, semicolon, period
+        dividers = /(,|;|\. )/
+      elsif ['Atn', 'Bwh', 'Hmn'].include? @code
+        # don't split at all
+        dividers = nil
       elsif ['Bgn', 'Bst', 'Brn'].include? @code
-        dividers = ['.']
+        # split by period
+        dividers = '.'
       elsif ['Bkr', 'Bgs'].include? @code
-        dividers = [';', '. ']
+        # split by comma, period
+        dividers = /(,|\. )/
       elsif ['Bge', 'Bck'].include? @code
-        dividers = [';']
+        # split by semicolon
+        dividers = ';'
       end
 
       if ['McP', 'Dsn'].include? @code
         # Trim all (parenthetical expressions)
-        trim_expressions = 'parenthetical'
+        trim_expressions = /\(.*\)/
       elsif ['Cnt', 'Aca', 'Bse'].include? @code
         # Trim parenthetical expressions that are <= 4 chars or contain numbers
-        trim_expressions = 'short_or_numbers'
+        trim_expressions = /\((.{0,4}|.*[0-9].*)\)/
       elsif ['Stz', 'Bck'].include? @code
         # Trim parenthetical expressions that contain numbers
-        trim_expressions = 'numbers'
+        trim_expressions = /\(.*[0-9].*\)/
       elsif ['Rsr'].include? @code
         # Trim all "expressions in quotes"
-        trim_expressions = 'quotes'
+        trim_expressions = /".*"/
       end
 
       if ['Btl', 'Bck'].include? @code
@@ -92,7 +99,7 @@ module Pollex
       {
         :language => language,
         :dividers => dividers,
-        :trim_expressions => trim_expressions
+        :trim_expressions => trim_expressions,
         :trim_after => trim_after
       }
     end

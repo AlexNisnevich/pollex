@@ -1,6 +1,3 @@
-require 'singleton'
-require 'open-uri'
-
 module Pollex
   # Singleton object for scraping Pollex, caching the results, and extracting data.
   class Scraper

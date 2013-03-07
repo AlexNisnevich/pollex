@@ -14,4 +14,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'nokogiri'
   s.add_dependency 'lrucache'
+  s.add_dependency 'json'
 end

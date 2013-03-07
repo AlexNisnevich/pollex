@@ -3,11 +3,17 @@ end
 
 require 'nokogiri'
 require 'lrucache'
+require 'json'
+
+require 'singleton'
+require 'open-uri'
+require 'pp'
 
 [
   'version',
   'pollex_class',
   'scraper',
+  'translator',
   'entry',
   'language',
   'reconstruction',
