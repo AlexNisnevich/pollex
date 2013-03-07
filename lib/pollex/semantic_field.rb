@@ -28,8 +28,8 @@ module Pollex
       ])
     end
 
-    # Counts the number of SemanticField within Pollex
-    # @return [Integer] number of SemanticField in Pollex
+    # Counts the number of SemanticFields within Pollex
+    # @return [Integer] number of SemanticFields in Pollex
     def self.count
       self.all.count
     end

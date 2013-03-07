@@ -38,48 +38,63 @@ module Pollex
       @count ||= @entries.count
     end
 
+    # Returns grammatical information for this source, used for
+    # intelligently parsing the descriptions of entries from this source
+    # @note Information is currently entered for all sources on
+    #   http://pollex.org.nz/source/ up to (and including)
+    #   Bse
     def grammar
       # defaults
       language = 'English'
       dividers = [',', ';']
       trim_expressions = 'none'
+      trim_after = nil
 
       # source-specific
 
-      if ['Cnt'].include? @code
+      if ['Cnt', 'Bxn'].include? @code
         language = 'Spanish'
       elsif ['Aca', 'Bgn', 'Btn'].include? @code
         language = 'French'
       end
 
-      if ['Aca'].include? @code
-        dividers = [',', ';', '.']
+      if ['Aca', 'Bxn'].include? @code
+        dividers = [',', ';', '. ']
       elsif ['Atn', 'Bwh'].include? @code
         dividers = []
-      elsif ['Bgn'].include? @code
+      elsif ['Bgn', 'Bst', 'Brn'].include? @code
         dividers = ['.']
-      elsif ['Bkr'].include? @code
-        dividers = [';', '.']
-      elsif ['Bge'].include? @code
+      elsif ['Bkr', 'Bgs'].include? @code
+        dividers = [';', '. ']
+      elsif ['Bge', 'Bck'].include? @code
         dividers = [';']
       end
 
       if ['McP', 'Dsn'].include? @code
         # Trim all (parenthetical expressions)
-        trim_parentheticals = 'parenthetical'
-      elsif ['Cnt', 'Aca'].include? @code
-        # Trim parenthetical expressions that are <= 3 chars or contain numbers
-        trim_parentheticals = 'short_or_numbers'
-      elsif ['Stz'].include? @code
+        trim_expressions = 'parenthetical'
+      elsif ['Cnt', 'Aca', 'Bse'].include? @code
+        # Trim parenthetical expressions that are <= 4 chars or contain numbers
+        trim_expressions = 'short_or_numbers'
+      elsif ['Stz', 'Bck'].include? @code
         # Trim parenthetical expressions that contain numbers
-        trim_parentheticals = 'numbers'
+        trim_expressions = 'numbers'
       elsif ['Rsr'].include? @code
         # Trim all "expressions in quotes"
-        trim_parentheticals = 'quotes'
-      elsif ['Btl'].include? @code
-        # Trim everything after a period
-        trim_parentheticals = 'after_period'
+        trim_expressions = 'quotes'
       end
+
+      if ['Btl', 'Bck'].include? @code
+        # Trim everything after a period
+        trim_after = '.'
+      end
+
+      {
+        :language => language,
+        :dividers => dividers,
+        :trim_expressions => trim_expressions
+        :trim_after => trim_after
+      }
     end
 
     # Returns all Sources in Pollex.
@@ -92,6 +107,12 @@ module Pollex
         [:count, 'td[3]/text()'],
         [:reference, 'td[4]/text()']
       ])
+    end
+
+    # Counts the number of Sources within Pollex
+    # @return [Integer] number of Sources in Pollex
+    def self.count
+      self.all.count
     end
   end
 end

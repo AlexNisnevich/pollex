@@ -15,6 +15,19 @@ module Pollex
       @reconstruction_path
     end
 
+    def terms
+      string = @description
+      grammar = description_grammar
+
+      if grammar[:trim_after]
+        string = string.split(grammar[:trim_after])[0]
+      end
+
+      # split string by grammar[:dividers]
+      # remove all text specified by grammar[:trim_expressions]
+      # attempt to translate if grammar[:language] != 'English'
+    end
+
     # @return [Language] the Language corresponding to this entry
     def language
       if @language_path
@@ -57,6 +70,16 @@ module Pollex
         [:reconstruction_name, 'td[2]/a/text()', lambda {|x| x.split('.')[1..-1].join('.')}],
         [:flag, "td[3]/span[@class='flag']/text()"]
       ])
+    end
+
+    private
+
+    def description_grammar
+      if @source
+        @source.grammar
+      else
+        Source.new.grammar
+      end
     end
   end
 end
