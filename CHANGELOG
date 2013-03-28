@@ -1,3 +1,6 @@
+3/28/2013 version 0.1.1
+* Source.grammar now includes information on all Pollex sources
+
 3/6/2013 version 0.1.0
 * New class: Pollex:Translator
 * New methods:

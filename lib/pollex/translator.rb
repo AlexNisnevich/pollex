@@ -28,7 +28,7 @@ module Pollex
           @cache[key]
         else
           # make a request to MyMemory
-          puts "Translating '#{phrase}' ..."
+          puts "Translating '#{phrase}' from (#{source_lang_code}) ..."
           url = "http://mymemory.translated.net/api/get?q=#{URI::encode(phrase)}&langpair=#{source_lang_code}%7Cen"
           results_json = open(url).read
           result = JSON.parse(results_json)['responseData']['translatedText']
