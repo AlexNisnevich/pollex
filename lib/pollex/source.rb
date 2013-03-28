@@ -44,7 +44,7 @@ module Pollex
     # intelligently parsing the descriptions of entries from this source
     # @note Information is currently entered for all sources on
     #   http://pollex.org.nz/source/ up to (and including)
-    #   Bse
+    #   Smt
     # @return [Hash] grammatical information pertaining to the descriptions
     #   of this sources' entries
     # @see Entry#terms
@@ -58,10 +58,10 @@ module Pollex
 
       # now bring in source-specific information
 
-      if ['Cnt', 'Bxn'].include? @code
+      if ['Cnt', 'Bxn', 'Egt', 'Fts'].include? @code
         # Spanish-language sources
         language = 'es'
-      elsif ['Aca', 'Bgn', 'Btn', 'Hmn', 'Rch'].include? @code
+      elsif ['Aca', 'Bgn', 'Btn', 'Hmn', 'Rch', 'Dln', 'Gzl'].include? @code
         # French-language sources
         language = 'fr'
       end
@@ -69,35 +69,41 @@ module Pollex
       if ['Aca', 'Bxn'].include? @code
         # split by comma, semicolon, period
         dividers = /(,|;|\. )/
-      elsif ['Atn', 'Bwh', 'Hmn'].include? @code
+      elsif ['Atn', 'Bwh', 'Hmn', 'Crk', 'Hdy', 'Smt'].include? @code
         # don't split at all
         dividers = '\n' # dividers = nil doesn't work
-      elsif ['Bgn', 'Bst', 'Brn'].include? @code
+      elsif ['Bgn', 'Bst', 'Brn', 'Gms'].include? @code
         # split by period
         dividers = '.'
       elsif ['Bkr', 'Bgs'].include? @code
         # split by comma, period
         dividers = /(,|\. )/
-      elsif ['Bge', 'Bck'].include? @code
+      elsif ['Bge', 'Bck', 'Cbl', 'Chn', 'Cdn', 'Dvs', 'Dnr', 'Dln', 'Dye', 'Ebt', 'Egt', 'Fbg', 'Fth', 'Fox', 'Fts'].include? @code
         # split by semicolon
         dividers = ';'
+      elsif ['Drd'].include? @code
+        # split by semicolon, period
+        dividers = /(;|\. )/
       end
 
-      if ['McP', 'Dsn'].include? @code
+      if ['McP', 'Dsn', 'Gzl'].include? @code
         # Trim all (parenthetical expressions)
         trim_expressions = /\(.*\)/
-      elsif ['Cnt', 'Aca', 'Bse', 'Hmn'].include? @code
+      elsif ['Cnt', 'Aca', 'Bse', 'Hmn', 'Cbl', 'Cpl', 'Crn', 'Chn', 'Chl', 'Cwd', 'Clk', 'Cek', 'Crk', 'Dvs', 'Dtn', 'Dnr', 'Dty', 'Fth', 'Fox', 'Fts', 'Gmd', 'McC'].include? @code
         # Trim parenthetical expressions that are <= 4 chars or contain numbers
         trim_expressions = /\((.{0,4}|.*[0-9].*)\)/
       elsif ['Stz', 'Bck'].include? @code
         # Trim parenthetical expressions that contain numbers
         trim_expressions = /\(.*[0-9].*\)/
+      elsif ['Kch'].include? @code
+        # Trim all [bracketed expressions]
+        trim_expressions = /\[.*\]/
       elsif ['Rsr'].include? @code
         # Trim all "expressions in quotes"
         trim_expressions = /".*"/
       end
 
-      if ['Btl', 'Bck'].include? @code
+      if ['Btl', 'Bck', 'Chl', 'McC'].include? @code
         # Trim everything after a period
         trim_after = '.'
       end
