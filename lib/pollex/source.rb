@@ -61,15 +61,15 @@ module Pollex
       if ['Cnt', 'Bxn', 'Egt', 'Fts'].include? @code
         # Spanish-language sources
         language = 'es'
-      elsif ['Aca', 'Bgn', 'Btn', 'Hmn', 'Rch', 'Dln', 'Gzl'].include? @code
+      elsif ['Aca', 'Bgn', 'Btn', 'Hmn', 'Rch', 'Dln', 'Gzl', 'Jnu', 'Jsn', 'Rve', 'Lvs', 'Lch', 'Lmt', 'Myr'].include? @code
         # French-language sources
         language = 'fr'
       end
 
-      if ['Aca', 'Bxn'].include? @code
+      if ['Aca', 'Bxn', 'Jsn'].include? @code
         # split by comma, semicolon, period
         dividers = /(,|;|\. )/
-      elsif ['Atn', 'Bwh', 'Hmn', 'Crk', 'Hdy', 'Smt'].include? @code
+      elsif ['Atn', 'Bwh', 'Hmn', 'Crk', 'Hdy', 'Smt', 'Rkj'].include? @code
         # don't split at all
         dividers = '\n' # dividers = nil doesn't work
       elsif ['Bgn', 'Bst', 'Brn', 'Gms'].include? @code
@@ -78,10 +78,10 @@ module Pollex
       elsif ['Bkr', 'Bgs'].include? @code
         # split by comma, period
         dividers = /(,|\. )/
-      elsif ['Bge', 'Bck', 'Cbl', 'Chn', 'Cdn', 'Dvs', 'Dnr', 'Dln', 'Dye', 'Ebt', 'Egt', 'Fbg', 'Fth', 'Fox', 'Fts'].include? @code
+      elsif ['Bge', 'Bck', 'Cbl', 'Chn', 'Cdn', 'Dvs', 'Dnr', 'Dln', 'Dye', 'Ebt', 'Egt', 'Fbg', 'Fth', 'Fox', 'Fts', 'Hzd', 'Hry', 'Hvn', 'Hnh', 'Fny', 'Mta', 'Myr', 'Mtx', 'Mnr'].include? @code
         # split by semicolon
         dividers = ';'
-      elsif ['Drd'].include? @code
+      elsif ['Drd', 'Hbn', 'Mkn'].include? @code
         # split by semicolon, period
         dividers = /(;|\. )/
       end
@@ -89,7 +89,7 @@ module Pollex
       if ['McP', 'Dsn', 'Gzl'].include? @code
         # Trim all (parenthetical expressions)
         trim_expressions = /\(.*\)/
-      elsif ['Cnt', 'Aca', 'Bse', 'Hmn', 'Cbl', 'Cpl', 'Crn', 'Chn', 'Chl', 'Cwd', 'Clk', 'Cek', 'Crk', 'Dvs', 'Dtn', 'Dnr', 'Dty', 'Fth', 'Fox', 'Fts', 'Gmd', 'McC'].include? @code
+      elsif ['Cnt', 'Aca', 'Bse', 'Hmn', 'Cbl', 'Cpl', 'Crn', 'Chn', 'Chl', 'Cwd', 'Clk', 'Cek', 'Crk', 'Dvs', 'Dtn', 'Dnr', 'Dty', 'Fth', 'Fox', 'Fts', 'Gmd', 'McC', 'Hwd', 'Ivs', 'Lmt', 'Lvs', 'Lmt', 'Lbr', 'Mar', 'Mta', 'Myr', 'McE', 'Mnr'].include? @code
         # Trim parenthetical expressions that are <= 4 chars or contain numbers
         trim_expressions = /\((.{0,4}|.*[0-9].*)\)/
       elsif ['Stz', 'Bck'].include? @code
@@ -103,7 +103,7 @@ module Pollex
         trim_expressions = /".*"/
       end
 
-      if ['Btl', 'Bck', 'Chl', 'McC'].include? @code
+      if ['Btl', 'Bck', 'Chl', 'McC', 'Hpr'].include? @code
         # Trim everything after a period
         trim_after = '.'
       end
