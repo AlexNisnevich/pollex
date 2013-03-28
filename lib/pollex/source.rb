@@ -42,9 +42,6 @@ module Pollex
 
     # Returns grammatical information for this source, used for
     # intelligently parsing the descriptions of entries from this source
-    # @note Information is currently entered for all sources on
-    #   http://pollex.org.nz/source/ up to (and including)
-    #   Smt
     # @return [Hash] grammatical information pertaining to the descriptions
     #   of this sources' entries
     # @see Entry#terms
@@ -61,41 +58,44 @@ module Pollex
       if ['Cnt', 'Bxn', 'Egt', 'Fts'].include? @code
         # Spanish-language sources
         language = 'es'
-      elsif ['Aca', 'Bgn', 'Btn', 'Hmn', 'Rch', 'Dln', 'Gzl', 'Jnu', 'Jsn', 'Rve', 'Lvs', 'Lch', 'Lmt', 'Myr'].include? @code
+      elsif ['Aca', 'Bgn', 'Btn', 'Hmn', 'Rch', 'Dln', 'Gzl', 'Jnu', 'Jsn', 'Rve', 'Lvs', 'Lch', 'Lmt', 'Myr', 'Mfr', 'Rdl', 'Sgs'].include? @code
         # French-language sources
         language = 'fr'
+      elsif ['Ths'].include? @code
+        # German-language sources
+        language = 'de'
       end
 
-      if ['Aca', 'Bxn', 'Jsn'].include? @code
+      if ['Aca', 'Bxn', 'Jsn', 'Mtu', 'Grn'].include? @code
         # split by comma, semicolon, period
         dividers = /(,|;|\. )/
       elsif ['Atn', 'Bwh', 'Hmn', 'Crk', 'Hdy', 'Smt', 'Rkj'].include? @code
         # don't split at all
         dividers = '\n' # dividers = nil doesn't work
-      elsif ['Bgn', 'Bst', 'Brn', 'Gms'].include? @code
+      elsif ['Bgn', 'Bst', 'Brn', 'Gms', 'Tmo'].include? @code
         # split by period
         dividers = '.'
       elsif ['Bkr', 'Bgs'].include? @code
         # split by comma, period
         dividers = /(,|\. )/
-      elsif ['Bge', 'Bck', 'Cbl', 'Chn', 'Cdn', 'Dvs', 'Dnr', 'Dln', 'Dye', 'Ebt', 'Egt', 'Fbg', 'Fth', 'Fox', 'Fts', 'Hzd', 'Hry', 'Hvn', 'Hnh', 'Fny', 'Mta', 'Myr', 'Mtx', 'Mnr'].include? @code
+      elsif ['Bge', 'Bck', 'Cbl', 'Chn', 'Cdn', 'Dvs', 'Dnr', 'Dln', 'Dye', 'Ebt', 'Egt', 'Fbg', 'Fth', 'Fox', 'Fts', 'Hzd', 'Hry', 'Hvn', 'Hnh', 'Fny', 'Mta', 'Myr', 'Mtx', 'Mnr', 'Mbg', 'Kvt', 'Ply', 'Ebt', 'Mka', 'Sby', 'Sve', 'Sta', 'Sma', 'Sks', 'Tbs', 'Tgr', 'Whe', 'Whr', 'Rmn', 'Wms', 'Ykr'].include? @code
         # split by semicolon
         dividers = ';'
-      elsif ['Drd', 'Hbn', 'Mkn'].include? @code
+      elsif ['Drd', 'Hbn', 'Mkn', 'Rdl', 'Bke'].include? @code
         # split by semicolon, period
         dividers = /(;|\. )/
       end
 
-      if ['McP', 'Dsn', 'Gzl'].include? @code
+      if ['McP', 'Dsn', 'Gzl', 'Sby', 'Sph'].include? @code
         # Trim all (parenthetical expressions)
         trim_expressions = /\(.*\)/
-      elsif ['Cnt', 'Aca', 'Bse', 'Hmn', 'Cbl', 'Cpl', 'Crn', 'Chn', 'Chl', 'Cwd', 'Clk', 'Cek', 'Crk', 'Dvs', 'Dtn', 'Dnr', 'Dty', 'Fth', 'Fox', 'Fts', 'Gmd', 'McC', 'Hwd', 'Ivs', 'Lmt', 'Lvs', 'Lmt', 'Lbr', 'Mar', 'Mta', 'Myr', 'McE', 'Mnr'].include? @code
+      elsif ['Cnt', 'Aca', 'Bse', 'Hmn', 'Cbl', 'Cpl', 'Crn', 'Chn', 'Chl', 'Cwd', 'Clk', 'Cek', 'Crk', 'Dvs', 'Dtn', 'Dnr', 'Dty', 'Fth', 'Fox', 'Fts', 'Gmd', 'McC', 'Hwd', 'Ivs', 'Lmt', 'Lvs', 'Lmt', 'Lbr', 'Mar', 'Mta', 'Myr', 'McE', 'Mnr', 'Mfr', 'Mtu', 'Gty', 'Ply', 'Rby', 'Mka', 'Clk', 'Sve', 'Shd', 'Sma', 'Stn', 'Sks', 'Tgr', 'Whe', 'Mke', 'Whr'].include? @code
         # Trim parenthetical expressions that are <= 4 chars or contain numbers
         trim_expressions = /\((.{0,4}|.*[0-9].*)\)/
       elsif ['Stz', 'Bck'].include? @code
         # Trim parenthetical expressions that contain numbers
         trim_expressions = /\(.*[0-9].*\)/
-      elsif ['Kch'].include? @code
+      elsif ['Kch', 'Ray'].include? @code
         # Trim all [bracketed expressions]
         trim_expressions = /\[.*\]/
       elsif ['Rsr'].include? @code
@@ -103,9 +103,12 @@ module Pollex
         trim_expressions = /".*"/
       end
 
-      if ['Btl', 'Bck', 'Chl', 'McC', 'Hpr'].include? @code
+      if ['Btl', 'Bck', 'Chl', 'McC', 'Hpr', 'Mbg', 'Wte'].include? @code
         # Trim everything after a period
         trim_after = '.'
+      elsif ['Shd'].include? @code
+        # Trim everything after an equals sign
+        trim_after = '='
       end
 
       {
