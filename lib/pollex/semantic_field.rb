@@ -43,7 +43,7 @@ module Pollex
     # @param id [Integer] ID of SemanticField to find
     # @return [SemanticField]
     def self.find(id)
-      self.all.select { |sf| sf.id == id }
+      self.all.select { |sf| sf.id == id }[0] rescue nil
     end
 
     # Looks up all SemanticFields matching a given name.

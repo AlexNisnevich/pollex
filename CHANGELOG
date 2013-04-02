@@ -1,3 +1,6 @@
+4/2/2013 version 0.2.1
+* SemanticField.find returns a single SemanticField, not an array
+
 4/2/2013 version 0.2.0
 * SemanticField changes
 	* code -> id
