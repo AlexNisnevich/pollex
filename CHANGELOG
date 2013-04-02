@@ -1,3 +1,10 @@
+4/2/2013 version 0.2.0
+* SemanticField changes
+	* code -> id
+	* find -> find_by_name
+	* New method: id - returns Pollex's internal ID
+	* New method: self.find - finds SemanticField by id
+
 3/28/2013 version 0.1.1
 * Source.grammar now includes information on all Pollex sources
 
