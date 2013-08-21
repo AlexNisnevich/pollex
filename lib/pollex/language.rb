@@ -23,7 +23,7 @@ module Pollex
 
     # @return [String] the Language's abbreviated code
     def code
-      @code ||= @path.split('/')[2].upcase
+      @code ||= self.all.find {|l| l.name == @name}.code
     end
 
     # @return [Integer] number of Entries belonging to this Language
